@@ -13,13 +13,13 @@ class MyApp extends StatelessWidget {
     final HtmlWebSocketChannel channel = HtmlWebSocketChannel.connect('ws://172.16.31.81:3000');
 
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Flutter Demo Web',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
       home: MyHomePage(
-        title: 'Flutter Demo Home Page',
+        title: 'Flutter Demo Web Home Page',
         channel: channel,
       ),
     );

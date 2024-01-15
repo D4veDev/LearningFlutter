@@ -6,7 +6,7 @@ class WebSocketServer {
   static final List<WebSocket> connectedClients = [];
 
   static Future<void> main() async {
-    final server = await HttpServer.bind('172.16.31.81', 3000);
+    final server = await HttpServer.bind('0.0.0.0', 3000); // Allow connections from any IP
     print('WebSocket server listening on port ${server.port}');
 
     await for (var request in server) {
