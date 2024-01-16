@@ -6,30 +6,41 @@ void main() {
   runApp(const MainApp());
 }
 
-Future<List> connectToDB(int counter) async {
-  List<String> items = ['...', '...', '...'];
+class DataBaseIntegration {
 
-  print("We're about to make a connection to the DB!");
-  var settings = ConnectionSettings(
+  static var settings = ConnectionSettings(
     host: 'mydatabase.cr8csc4s4i51.eu-north-1.rds.amazonaws.com',
     port: 3306,
     user: 'admin',
-    password: 'databasepass',
+    password: '*********',
     db: 'hsk',
   );
-  var conn = await MySqlConnection.connect(settings);
-  
-  var results = await conn.query('select simplified, pinyin_tones, translation from hsk.vocabulary where id = '+ counter.toString());
 
+  static Future<List> connectToDB(int counter) async {
+  List<String> items = ['...', '...', '...'];
+  var conn = await MySqlConnection.connect(settings);
+  var results = await conn.query('select simplified, pinyin_tones, translation from hsk.vocabulary where id = '+ counter.toString());
   for (var row in results) {
   items[0] = row[0];
   items[1] = row[1];
-  items[2] = row[2];
   };
-
-
+  await conn.close();
   return items;
 }
+
+static Future<int> getDBsize() async{
+  int size = 0;
+  var conn = await MySqlConnection.connect(settings);
+  var results = await conn.query('select count(id) from hsk.vocabulary');
+  for (var row in results) {
+  size = row[0];
+  };
+  await conn.close();
+  return size;
+}
+  
+}
+
 
 class MainApp extends StatelessWidget {
   const MainApp({Key? key});
@@ -51,15 +62,26 @@ class LandingPage extends StatefulWidget {
 
 class _LandingPage extends State<LandingPage> {
   int count = 0;
+  int max = 0;
+  @override
+  void initState(){
+    super.initState();
+    //perform initialisation tasks here
+    Future<int> futureMax = DataBaseIntegration.getDBsize();
+    futureMax.then((intResult) {
+    // Now you can use intResult as a regular int
+    max = intResult;
+  });
+    
+  }
 
   void _incrementCounter() {
-    setState(() {
-      count++;
-    });
+    setState(() {count++; });
   }
 
   @override
   Widget build(BuildContext context) {
+    print(max);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromARGB(255, 108, 29, 29),
@@ -108,7 +130,7 @@ class _LandingPage extends State<LandingPage> {
 
   Widget buildFutureBuilder() {
     return FutureBuilder(
-      future: connectToDB(count),
+      future: DataBaseIntegration.connectToDB(count),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Text("");
@@ -136,8 +158,8 @@ class _LandingPage extends State<LandingPage> {
                     fontSize: 50,
                   ),
                 ),
-                Text(
-                  normalList[2],
+                  Text(
+                  "Size: " + (max-count).toString(),
                   style: TextStyle(
                     color: Color.fromARGB(255, 212, 184, 4),
                     fontSize: 50,
