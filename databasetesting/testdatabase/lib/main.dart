@@ -23,6 +23,7 @@ Future<List> connectToDB() async {
     print('Hanzi: ${row[1]}, Pinyin: ${row[4]}');
     hanzipinyin.add(row[1]);
     hanzipinyin.add(row[4]);
+    hanzipinyin.add(row[5]);
   }
 
   return hanzipinyin;
@@ -55,29 +56,28 @@ class _LandingPage extends State<LandingPage> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromARGB(255, 108, 29, 29),
         title: Text(
-            "HANZI BROWSER",
-            style: TextStyle(
-              color: Color.fromARGB(255, 255, 255, 255),
-              fontSize: 25,
-            ),
+          "HANZI BROWSER",
+          style: TextStyle(
+            color: Color.fromARGB(255, 255, 255, 255),
+            fontSize: 25,
           ),
+        ),
       ),
       body: Center(
         child: Column(
           children: <Widget>[
-  
             TextButton(
-                style: TextButton.styleFrom(
-                  foregroundColor: Colors.amber,
-                  backgroundColor: Color.fromARGB(255, 255, 220, 93)),
-                child: const Text(
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.amber,
+                backgroundColor: Color.fromARGB(255, 255, 220, 93),
+              ),
+              child: const Text(
                 "ITERATE",
                 style: TextStyle(
                   color: Colors.white,
@@ -90,9 +90,7 @@ class _LandingPage extends State<LandingPage> {
               },
             ),
             Container(
-              color: Colors.amber,
-              margin: EdgeInsetsDirectional.all(10),
-              child: buildFutureBuilder()//buildFutureBuilder(),
+              child: buildFutureBuilder(),
             ),
           ],
         ),
@@ -110,11 +108,31 @@ class _LandingPage extends State<LandingPage> {
           return Text('Error: ${snapshot.error}');
         } else {
           List<String> normalList = snapshot.data as List<String>;
-          return Text(
-            normalList[count],
-            style: TextStyle(
-              color: Color.fromARGB(255, 212, 184, 4),
-              fontSize: 50,
+          return Container(
+            child: Column(
+              children: <Widget>[
+                Text(
+                  normalList[count],
+                  style: TextStyle(
+                    color: Color.fromARGB(255, 212, 184, 4),
+                    fontSize: 50,
+                  ),
+                ),
+                Text(
+                  normalList[count + 1],
+                  style: TextStyle(
+                    color: Color.fromARGB(255, 212, 184, 4),
+                    fontSize: 50,
+                  ),
+                ),
+                Text(
+                  normalList[count + 2],
+                  style: TextStyle(
+                    color: Color.fromARGB(255, 212, 184, 4),
+                    fontSize: 50,
+                  ),
+                ),
+              ],
             ),
           );
         }
