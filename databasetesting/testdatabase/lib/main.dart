@@ -16,12 +16,12 @@ Future connectToDB() async{
     port: 3306,
     user: 'admin',
     password: 'databasepass',
-    db: 'chinese'
+    db: 'hsk'
   );
   var conn = await MySqlConnection.connect(settings);
-  var results = await conn.query('select * from chinese.foods');
+  var results = await conn.query('select * from hsk.vocabulary');
   for (var row in results) {
-  print('Name: ${row[0]}, email: ${row[1]}');
+  print('Hanzi: ${row[1]}, Pinyin: ${row[4]}');
   }
   print('we have made contact');
 }
