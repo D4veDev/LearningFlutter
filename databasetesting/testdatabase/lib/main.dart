@@ -6,7 +6,10 @@ void main() {
 }
 
 Future<List> connectToDB() async {
-  List<String> hanzipinyin = [];
+  List<String> hanzi= [];
+  List<String> pinyin= [];
+  List<String> translation = [];
+  List<List> unifiedList = [];
 
   print("We're about to make a connection to the DB!");
   var settings = ConnectionSettings(
@@ -17,16 +20,24 @@ Future<List> connectToDB() async {
     db: 'hsk',
   );
   var conn = await MySqlConnection.connect(settings);
-  var results = await conn.query('select * from hsk.vocabulary');
+  
+  var Pinyinresults = await conn.query('select pinyin from hsk.vocabulary');
+  var Hanziresults = await conn.query('select simplified from hsk.vocabulary');
+  var Translationresults = await conn.query('select simplified from hsk.vocabulary');
 
-  for (var row in results) {
-    print('Hanzi: ${row[1]}, Pinyin: ${row[4]}');
-    hanzipinyin.add(row[1]);
-    hanzipinyin.add(row[4]);
-    hanzipinyin.add(row[5]);
+  for (var row in Pinyinresults) {
+    pinyin.add(row[1]);
+  }
+  for (var row in Hanziresults) {
+    hanzi.add(row[1]);
+  }
+  for (var row in Translationresults) {
+    translation.add(row[1]);
   }
 
-  return hanzipinyin;
+  unifiedList = [hanzi, pinyin, translation];
+
+  return unifiedList;
 }
 
 class MainApp extends StatelessWidget {
@@ -107,26 +118,32 @@ class _LandingPage extends State<LandingPage> {
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else {
-          List<String> normalList = snapshot.data as List<String>;
+          List<List> normalList = snapshot.data as List<List>;
+          List hanzi, pinyin, translation;
+          hanzi = normalList[0];
+          pinyin = normalList[1];
+          translation = normalList[2];
+
           return Container(
+            
             child: Column(
               children: <Widget>[
                 Text(
-                  normalList[count],
+                  hanzi[count],
                   style: TextStyle(
                     color: Color.fromARGB(255, 212, 184, 4),
                     fontSize: 50,
                   ),
                 ),
                 Text(
-                  normalList[count + 1],
+                  pinyin[count],
                   style: TextStyle(
                     color: Color.fromARGB(255, 212, 184, 4),
                     fontSize: 50,
                   ),
                 ),
                 Text(
-                  normalList[count + 2],
+                  translation[count],
                   style: TextStyle(
                     color: Color.fromARGB(255, 212, 184, 4),
                     fontSize: 50,
