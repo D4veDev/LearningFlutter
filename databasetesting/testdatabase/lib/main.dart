@@ -5,11 +5,8 @@ void main() {
   runApp(const MainApp());
 }
 
-Future<List> connectToDB() async {
-  List<String> hanzi= [];
-  List<String> pinyin= [];
-  List<String> translation = [];
-  List<List> unifiedList = [];
+Future<List> connectToDB(int counter) async {
+  List<String> items = ['...', '...', '...'];
 
   print("We're about to make a connection to the DB!");
   var settings = ConnectionSettings(
@@ -21,23 +18,16 @@ Future<List> connectToDB() async {
   );
   var conn = await MySqlConnection.connect(settings);
   
-  var Pinyinresults = await conn.query('select pinyin from hsk.vocabulary');
-  var Hanziresults = await conn.query('select simplified from hsk.vocabulary');
-  var Translationresults = await conn.query('select simplified from hsk.vocabulary');
+  var results = await conn.query('select simplified, pinyin_tones, translation from hsk.vocabulary where id = '+ counter.toString());
 
-  for (var row in Pinyinresults) {
-    pinyin.add(row[1]);
-  }
-  for (var row in Hanziresults) {
-    hanzi.add(row[1]);
-  }
-  for (var row in Translationresults) {
-    translation.add(row[1]);
-  }
+  for (var row in results) {
+  items[0] = row[0];
+  items[1] = row[1];
+  items[2] = row[2];
+  };
 
-  unifiedList = [hanzi, pinyin, translation];
 
-  return unifiedList;
+  return items;
 }
 
 class MainApp extends StatelessWidget {
@@ -111,39 +101,35 @@ class _LandingPage extends State<LandingPage> {
 
   Widget buildFutureBuilder() {
     return FutureBuilder(
-      future: connectToDB(),
+      future: connectToDB(count),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return CircularProgressIndicator();
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else {
-          List<List> normalList = snapshot.data as List<List>;
-          List hanzi, pinyin, translation;
-          hanzi = normalList[0];
-          pinyin = normalList[1];
-          translation = normalList[2];
+          List<String> normalList = snapshot.data as List<String>;
 
           return Container(
             
             child: Column(
               children: <Widget>[
                 Text(
-                  hanzi[count],
+                  normalList[0],
                   style: TextStyle(
                     color: Color.fromARGB(255, 212, 184, 4),
                     fontSize: 50,
                   ),
                 ),
                 Text(
-                  pinyin[count],
+                  normalList[1],
                   style: TextStyle(
                     color: Color.fromARGB(255, 212, 184, 4),
                     fontSize: 50,
                   ),
                 ),
                 Text(
-                  translation[count],
+                  normalList[2],
                   style: TextStyle(
                     color: Color.fromARGB(255, 212, 184, 4),
                     fontSize: 50,
