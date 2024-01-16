@@ -19,6 +19,11 @@ Future connectToDB() async{
     db: 'chinese'
   );
   var conn = await MySqlConnection.connect(settings);
+  var userId = 1;
+  var results = await conn.query('select * from chinese.foods', [userId]);
+  for (var row in results) {
+  print('Name: ${row[0]}, email: ${row[1]}');
+  }
   print('we have made contact');
 }
 
