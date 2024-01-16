@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mysql1/mysql1.dart';
+import 'package:testdatabase/home.dart';
 
 void main() {
   runApp(const MainApp());
@@ -36,7 +37,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: LandingPage(),
+      home: HomePage(),
     );
   }
 }
@@ -71,9 +72,17 @@ class _LandingPage extends State<LandingPage> {
         ),
       ),
       body: Center(
-        child: Column(
+        child: Stack(
+
           children: <Widget>[
-            TextButton(
+            Container(
+              child: buildFutureBuilder(),
+            ),
+
+         
+            Align(
+              alignment: Alignment.bottomCenter,
+            child: TextButton(
               style: TextButton.styleFrom(
                 foregroundColor: Colors.amber,
                 backgroundColor: Color.fromARGB(255, 255, 220, 93),
@@ -89,10 +98,8 @@ class _LandingPage extends State<LandingPage> {
               onPressed: () {
                 _incrementCounter();
               },
-            ),
-            Container(
-              child: buildFutureBuilder(),
-            ),
+            )
+            )
           ],
         ),
       ),
@@ -104,14 +111,15 @@ class _LandingPage extends State<LandingPage> {
       future: connectToDB(count),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
+          return Text("");
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else {
           List<String> normalList = snapshot.data as List<String>;
 
           return Container(
-            
+            child: Align(
+            alignment: Alignment.topCenter,
             child: Column(
               children: <Widget>[
                 Text(
@@ -137,6 +145,7 @@ class _LandingPage extends State<LandingPage> {
                 ),
               ],
             ),
+            )
           );
         }
       },
