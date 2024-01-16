@@ -24,7 +24,7 @@ Future<List> connectToDB() async {
     hanzipinyin.add(row[1]);
     hanzipinyin.add(row[4]);
   }
-  print('We have made contact');
+
   return hanzipinyin;
 }
 
@@ -47,27 +47,53 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingPage extends State<LandingPage> {
+  int count = 0;
+
+  void _incrementCounter() {
+    setState(() {
+      count++;
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 108, 29, 29),
+        title: Text(
+            "HANZI BROWSER",
+            style: TextStyle(
+              color: Color.fromARGB(255, 255, 255, 255),
+              fontSize: 25,
+            ),
+          ),
+      ),
       body: Center(
         child: Column(
           children: <Widget>[
-            Container(decoration: new BoxDecoration(color: Color.fromARGB(255, 118, 34, 29))),
-            Container(
-            margin: EdgeInsets.symmetric(horizontal: 20.0),
-            child: buildFutureBuilder()
-            ),
+  
             TextButton(
-           child: const Text(
-                "Text Button",
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.amber,
+                  backgroundColor: Color.fromARGB(255, 255, 220, 93)),
+                child: const Text(
+                "ITERATE",
                 style: TextStyle(
-                  color: Colors.blue,
-                  fontWeight: FontWeight.bold
+                  color: Colors.white,
+                  fontSize: 50,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              onPressed: () {print("you hit that button!");},
-            )
+              onPressed: () {
+                _incrementCounter();
+              },
+            ),
+            Container(
+              color: Colors.amber,
+              margin: EdgeInsetsDirectional.all(10),
+              child: buildFutureBuilder()//buildFutureBuilder(),
+            ),
           ],
         ),
       ),
@@ -85,10 +111,10 @@ class _LandingPage extends State<LandingPage> {
         } else {
           List<String> normalList = snapshot.data as List<String>;
           return Text(
-            normalList[1],
+            normalList[count],
             style: TextStyle(
               color: Color.fromARGB(255, 212, 184, 4),
-              fontSize: 25,
+              fontSize: 50,
             ),
           );
         }
